@@ -1,0 +1,307 @@
+\documentclass[10pt,letter,notitlepage]{article}
+%Mise en page
+\usepackage[left=2cm, right=2cm, lines=45, top=0.8in, bottom=0.7in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{fancybox}
+\usepackage{pdfpages} 
+\renewcommand{\headrulewidth}{1.5pt}
+\renewcommand{\footrulewidth}{1.5pt}
+\pagestyle{fancy}
+\newcommand\Loadedframemethod{TikZ}
+\usepackage[framemethod=\Loadedframemethod]{mdframed}
+\usepackage{tikz}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+%\usepackage{url}
+\usepackage{dsfont}
+\usepackage{amssymb,amsmath}
+\usepackage{xspace}
+
+\lhead{
+\textbf{University of Waterloo}
+}
+\rhead{\textbf{2017 Fall}
+}
+\chead{\textbf{
+CS489/698
+ }}
+
+\newcommand{\RR}{\mathds{R}}
+\newcommand{\sign}{\mathop{\mathrm{sign}}}
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
+\newcommand{\zero}{\mathbf{0}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\bv}{\mathbf{b}}
+\newcommand{\wv}{\mathbf{w}}
+\newcommand{\xv}{\mathbf{x}}
+\newcommand{\yv}{\mathbf{y}}
+\newcommand{\inner}[2]{\langle #1, #2 \rangle}
+\newcommand{\red}[1]{{\color{red}#1}}
+\newcommand{\blue}[1]{{\color{blue}#1}}
+\newcommand{\magenta}[1]{{\color{magenta}#1}}
+
+
+\newcommand{\ea}{{et al.}\xspace}
+\newcommand{\eg}{{e.g.}\xspace}
+\newcommand{\ie}{{i.e.}\xspace}
+\newcommand{\iid}{{i.i.d.}\xspace}
+\newcommand{\cf}{{cf.}\xspace}
+\newcommand{\wrt}{{w.r.t.}\xspace}
+\newcommand{\aka}{{a.k.a.}\xspace}
+\newcommand{\etc}{{etc.}\xspace}
+
+
+\lfoot{}
+\cfoot{\textbf{Yao-Liang Yu (yaoliang.yu@uwaterloo.ca) \textcopyright 2017}}
+%\rfoot{\textit{Pr. $\mathcal{A}$.Kaal}}
+
+%================================
+%================================
+
+\setlength{\parskip}{1cm}
+\setlength{\parindent}{1cm}
+\tikzstyle{titregris} =
+[draw=gray,fill=white, shading = exersicetitle, %
+text=gray, rectangle, rounded corners, right,minimum height=.3cm]
+\pgfdeclarehorizontalshading{exersicebackground}{100bp}
+{color(0bp)=(green!40); color(100bp)=(black!5)}
+\pgfdeclarehorizontalshading{exersicetitle}{100bp}
+{color(0bp)=(red!40);color(100bp)=(black!5)}
+\newcounter{exercise}
+\renewcommand*\theexercise{exercice \textbf{Exercice}~n\arabic{exercise}}
+\makeatletter
+\def\mdf@@exercisepoints{}%new mdframed key:
+\define@key{mdf}{exercisepoints}{%
+\def\mdf@@exercisepoints{#1}
+}
+
+\mdfdefinestyle{exercisestyle}{%
+outerlinewidth=1em,outerlinecolor=white,%
+leftmargin=-1em,rightmargin=-1em,%
+middlelinewidth=0.5pt,roundcorner=3pt,linecolor=black,
+apptotikzsetting={\tikzset{mdfbackground/.append style ={%
+shading = exersicebackground}}},
+innertopmargin=0.1\baselineskip,
+skipabove={\dimexpr0.1\baselineskip+0\topskip\relax},
+skipbelow={-0.1em},
+needspace=0.5\baselineskip,
+frametitlefont=\sffamily\bfseries,
+settings={\global\stepcounter{exercise}},
+singleextra={%
+\node[titregris,xshift=0.5cm] at (P-|O) %
+{~\mdf@frametitlefont{\theexercise}~};
+\ifdefempty{\mdf@@exercisepoints}%
+{}%
+{\node[titregris,left,xshift=-1cm] at (P)%
+{~\mdf@frametitlefont{\mdf@@exercisepoints points}~};}%
+},
+firstextra={%
+\node[titregris,xshift=1cm] at (P-|O) %
+{~\mdf@frametitlefont{\theexercise}~};
+\ifdefempty{\mdf@@exercisepoints}%
+{}%
+{\node[titregris,left,xshift=-1cm] at (P)%
+{~\mdf@frametitlefont{\mdf@@exercisepoints points}~};}%
+},
+}
+\makeatother
+
+
+%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\mdfdefinestyle{theoremstyle}{%
+outerlinewidth=0.01em,linecolor=black,middlelinewidth=0.5pt,%
+frametitlerule=true,roundcorner=2pt,%
+apptotikzsetting={\tikzset{mfframetitlebackground/.append style={%
+shade,left color=white, right color=blue!20}}},
+frametitlerulecolor=black,innertopmargin=1\baselineskip,%green!60,
+innerbottommargin=0.5\baselineskip,
+frametitlerulewidth=0.1pt,
+innertopmargin=0.7\topskip,skipabove={\dimexpr0.2\baselineskip+0.1\topskip\relax},
+frametitleaboveskip=1pt,
+frametitlebelowskip=1pt
+}
+\setlength{\parskip}{0mm}
+\setlength{\parindent}{10mm}
+\mdtheorem[style=theoremstyle]{exercise}{\textbf{Exercise}}
+
+%================Liste definition--numList-and alphList=============
+\newcounter{alphListCounter}
+\newenvironment
+{alphList}
+{\begin{list}
+{\alph{alphListCounter})}
+{\usecounter{alphListCounter}
+\setlength{\rightmargin}{0cm}
+\setlength{\leftmargin}{0.5cm}
+\setlength{\itemsep}{0.2cm}
+\setlength{\partopsep}{0cm}
+\setlength{\parsep}{0cm}}
+}
+{\end{list}}
+\newcounter{numListCounter}
+\newenvironment
+{numList}
+{\begin{list}
+{\arabic{numListCounter})}
+{\usecounter{numListCounter}
+\setlength{\rightmargin}{0cm}
+\setlength{\leftmargin}{0.5cm}
+\setlength{\itemsep}{0cm}
+\setlength{\partopsep}{0cm}
+\setlength{\parsep}{0cm}}
+}
+{\end{list}}
+
+\usepackage[breaklinks=true,letterpaper=true,linkcolor=magenta,urlcolor=magenta,citecolor=black]{hyperref}
+
+\usepackage{cleveref}
+
+
+%===========================================================
+\begin{document}
+
+\begin{center}
+\large{\textbf{CS489/698: Introduction to Machine Learning} \\ Homework 1\\ \red{Due: 11:59 pm, September 26, 2017}, \red{submit on LEARN}.} \\
+
+Include your name, student number and session!
+
+\end{center}
+
+\begin{center}
+Submit your writeup in pdf and all source code in a zip file (with proper documentation). Write a script for each programming exercise so that the TAs can easily run and verify your results. Make sure your code runs!
+
+[Text in square brackets are hints that can be ignored.]
+\end{center}
+
+\vspace{2em}
+\begin{exercise}[Perceptron and Winnow (50 pts)]
+		
+\begin{algorithm}[H]
+\DontPrintSemicolon
+	\KwIn{$X\in\RR^{n\times d}$, $\yv\in \{-1,1\}^n$, $\wv=\zero_d$, $b=0$, $\mathsf{max\_pass} \in \mathds{N}$}
+	
+	\KwOut{$\wv, b, mistake$}
+	
+	\For{$t=1, 2, \ldots, \mathsf{max\_pass}$ }{
+		$mistake(t) \gets 0$
+		
+		\For{$i=1, 2, \ldots, n$}{
+			\If{$y_i (\inner{\xv_i}{\wv}+b) \leq 0$}{
+				$\wv \gets \wv + y_i\xv_i$ \tcp*{$\xv_i$ is the $i$-th row of $X$}
+			
+				$b \gets b + y_i$
+			
+				$mistake(t) \gets mistake(t) + 1$
+			}	
+		}
+	}
+	\caption{The perceptron algorithm.}
+	\label{alg:perceptron}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+	\KwIn{$X\in\RR^{n\times d}$, $\yv\in \{-1,1\}^n$, $\wv=\tfrac{1}{d+1}\one_d$, $b=\tfrac{1}{d+1}$, step size $\eta > 0$, $\mathsf{max\_pass} \in \mathds{N}$}
+	\KwOut{$\wv, b, mistake$}
+	
+	\For{$t=1, 2, \ldots, \mathsf{max\_pass}$ }{
+		$mistake(t) \gets 0$
+
+		\For{$i=1, 2, \ldots, n$}{		
+			\If{$y_i (\inner{\xv_i}{\wv}+b) \leq 0$}{
+				$\wv \gets \wv \odot \exp(\eta y_i\xv_i)$ \tcp*{$\odot$ is the element-wise product}
+			
+				$b \gets b \exp(\eta y_i)$
+			
+				$s \gets b + \sum_{i=1}^n w_i$ \tcp*{normalize}
+			
+				$\wv \gets \wv / s$
+			
+				$b \gets b / s$
+				
+				$mistake(t) \gets mistake(t) + 1$
+			}		
+		}	
+	}
+	\caption{The winnow algorithm.}
+	\label{alg:winnow}
+\end{algorithm}
+	
+	\begin{enumerate}
+		\item (10 pts) Implement the perceptron in \Cref{alg:perceptron}. Your implementation should take input as $X = [\xv_1, \ldots, \xv_n]^\top \in \RR^{n \times d}$, $\yv \in \{-1,1\}^{n}$, an initialization of the hyperplane parameters $\wv\in\RR^{d}$ and $b\in \RR$, and the maximum number of passes of the training set [suggested $\mathsf{max\_pass} = 500$]. Run your perceptron algorithm on the \href{https://archive.ics.uci.edu/ml/datasets/spambase}{\magenta{\textsf{spambase}}} dataset (available on \href{https://cs.uwaterloo.ca/~y328yu/mycourses/489/assignment.html}{\magenta{course website}}), and plot the number of mistakes \wrt the number of passes.
+		
+		\item (5 pts) Run your implementation on \textsf{spambase} again, but this time with the \textsc{if} condition removed, \ie, we update the weight vectors even when perceptron predicts correctly. Plot again the number of mistakes \wrt the number of passes.
+		
+		\item (5 pts) Prove the following claim: If there exist $\wv^*$ and $b^*$ such that 		\begin{align}
+		\begin{cases}
+		y_i(\inner{\xv_i}{\wv^*}+b^*) \geq 0, & \text{ if } y_i = 1\\
+		y_i(\inner{\xv_i}{\wv^*}+b^*) < 0, & \text{ if } y_i = -1
+		\end{cases}
+		,
+	\end{align}
+		then there exist $\wv^\star$ and $b^\star$ such that 
+	\begin{align}
+		\begin{cases}
+		y_i(\inner{\xv_i}{\wv^\star}+b^\star) > 0, & \text{ if } y_i = 1\\
+		y_i(\inner{\xv_i}{\wv^\star}+b^\star) < 0, & \text{ if } y_i = -1
+		\end{cases}
+		.
+	\end{align}
+	This confirms again that we can be indifferent about the value of $\sign(0)$.
+		\item (10 pts) Implement winnow (\Cref{alg:winnow}), the multiplicative version of perceptron. Tune and report the step size $\eta$ and plot the number of mistakes winnow makes on the \textsf{spambase} dataset (\wrt the number of passes and step size $\eta$). [A good step size should be inversely proportional to the maximum absolute value in $X$.]
+		\item (10 pts) It is known that if there exist \red{nonnegative} $\wv^\star$ and $b^\star$ such that $y_i (\inner{\xv_i}{\wv^\star}+b^\star) > 0$ for all $i$, then winnow converges after at most $O(\frac{2\log(d+1)}{\gamma^2})$ mistakes, where 
+		$$\gamma = \max_{{\wv \choose b} \geq \zero, b+\sum_i w_i=1} \min_i \frac{y_i (\inner{\xv_i}{\wv}+b)}{\max_i\max_j \max\{|X_{ij}|,1\} }.
+		$$		
+		Recall that in perceptron, there is no nonnegativity assumption. 
+		Find a simple transformation of the data $(X, \yv)$ such that if there exist $\wv^*$ and $b^*$ so that $y_i (\inner{\xv_i}{\wv^*}+b^*) > 0$ for all $i$, then there exist such $\wv^*$ and $b^*$ on the \red{transformed} data that are \blue{nonnegative}. Thus, the additional nonnegativity assumption in winnow is really not a big deal. Plot the number of mistakes that winnow makes on the transformed \textsf{spambase} \wrt the number of passes (with a similar step size as in the previous exercise). [Each real number $w$ can be written as the difference of two nonnegative numbers $w_+ := \max\{w, 0\}$ and $w_- := \max\{-w, 0\}$. Consider duplicating each point $\xv$ with some version of itself.]
+		
+		\item (10 pts) Compare what you learned about perceptron with the above result of winnow. What are the respective pros and cons of the two algorithms? [Recall that the margin $\gamma$ in perceptron can be written as: $\gamma = \max\limits_{b^2 + \sum_i w_i^2=1} \min\limits_i \frac{y_i (\inner{\xv_i}{\wv}+b)}{\max_i\sqrt{1+\sum_j |X_{ij}|^2} }$, with which the perceptron converges after at most $O(1/\gamma^2)$ mistakes.] Modify the \textsf{spambase} dataset by adding 100 irrelevant features (say, random numbers from the uniform distribution on $[-1,1]$) [\textsf{rand} in \textsf{Matlab} or \textsf{Julia}, and \textsf{numpy.random.uniform} in \textsf{python}] and run both perceptron and winnow (you may want to use the variant in Ex 1.5). Plot the number of mistakes  that each algorithm makes this time (again \wrt the number of passes).
+	\end{enumerate}
+\end{exercise}
+
+\vspace{2em}
+\begin{exercise}[Linear Regression and Regularization (50 pts)]
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+	\KwIn{$X\in\RR^{n\times d}$, $\yv\in \RR^n$, $\wv=\zero_d$, $\lambda \geq 0$}
+	\KwOut{$\wv$}	
+	\Repeat{convergence}{		
+		\For{$j=1, \ldots, d$}{
+			$w_j \gets \argmin\limits_{z \in \RR} ~\tfrac{1}{2}\|X_{:j}z + \sum_{k\ne j} X_{:k} w_k  - \yv\|_2^2 + \lambda |z| $ \tcp*{fix all $\wv$ but optimize $w_j$ only}
+		}	
+	}
+	\caption{Alternating minimization for Lasso.}
+	\label{alg:lasso}
+\end{algorithm}
+\begin{enumerate}
+	\item (10 pts) Implement ridge regression that we discussed in class:
+\begin{align}
+\min_{\wv\in\RR^d} \tfrac{1}{2}\|X\wv - \yv\|_2^2 + \lambda \|\wv\|_2^2.
+\end{align}
+Your implementation should take input as $X \in \RR^{n \times d}$, $\yv\in\RR^n$, $\lambda \geq 0$, and maybe an initializer for $\wv \in \RR^d$. [To solve a linear system $A\xv = \bv$, use $A \backslash \bv$ in \textsf{Matlab} or \textsf{Julia}, and \textsf{numpy.linalg.solve} in \textsf{python}.] Test your algorithm on the Boston \href{http://lib.stat.cmu.edu/datasets/boston}{\textsf{\magenta{housing}}} dataset (to predict the median house price, \ie, $y$). Train and test splits are provided on \href{https://cs.uwaterloo.ca/~y328yu/mycourses/489/assignment.html}{\magenta{course website}}. Find the best $\lambda^*$ in the range [0, 100] with increment 10 using 10-fold cross validation. Report the mean square error on the training set ($\tfrac{1}{n}\|X\wv - \yv\|_2^2$), validation set (averaged over 10-fold) and test set [different normalization constant $n$] for each candidate $\lambda$. Report the percentage of nonzeros in $\wv$ (for each $\lambda$).
+	
+	\item (10 pts) Randomly choose a sample pair $(\xv, y)$ from your training set. Multiply $\xv$ by $10^6$ and/or $y$ by $10^3$ and run ridge regression again (with the same cross-validation procedure to choose $\lambda$ as above). Report the mean square error on the training set ($\tfrac{1}{n}\|X\wv - \yv\|_2^2$), validation set (averaged over 10-fold) and test set [different normalization constant $n$] for each candidate $\lambda$.
+			
+	\item (10 pts) Add 1000 irrelevant columns to $X$ (both training and test splits), with each entry an \emph{iid} sample from the standard normal distribution (\textsf{randn} in \textsf{Matlab} or \textsf{Julia}, and \textsf{numpy.random.standard\_normal} in \textsf{python}). Run ridge regression again (with the same cross-validation procedure to choose $\lambda$ as above). Report the mean square error on the training set ($\tfrac{1}{n}\|X\wv - \yv\|_2^2$), validation set (averaged over 10-fold) and test set [different normalization constant $n$] for each candidate $\lambda$. Report the percentage of nonzeros in the \emph{last 1000 entries} in $\wv$ (\ie, weights corresponding to the added irrelevant features).
+		
+	\item (10 pts) The Lasso replaces the (squared) 2-norm penalty in ridge regression with the 1-norm:
+\begin{align}
+\min_{\wv\in\RR^d} \tfrac{1}{2}\|X\wv - \yv\|_2^2 + \lambda \|\wv\|_1.
+\end{align}
+Implement the alternating minimization algorithm for Lasso in \Cref{alg:lasso}. You might find the following fact useful:
+\begin{align}
+\sign(w) \max\{0, |w|-\lambda\} = \argmin_{z \in \RR} \tfrac{1}{2}(z - w)^2 + \lambda |z|,
+\end{align}
+which is known as the soft-thresholding operator. You should try to perform step 3 of \Cref{alg:lasso} in $O(n)$ time and space. Stop the algorithm when the change of $\wv$ drops below some tolerance $\mathsf{tol}$, say $10^{-3}$. [Any idea to make your implementation even more efficient?]
+Report the mean square error of Lasso on the training set ($\tfrac{1}{n}\|X\wv - \yv\|_2^2$), validation set (averaged over 10-fold) and test set [different normalization constant $n$] for each candidate $\lambda$. Report the percentage of nonzeros in $\wv$ (for each $\lambda$).
+
+\item (10 pts) Run Lasso on the \textsf{housing} dataset that you modified in Ex2.3, with $\lambda$ cross-validated as before. Report the mean square error on the training set ($\tfrac{1}{n}\|X\wv - \yv\|_2^2$), validation set (averaged over 10-fold) and test set [different normalization constant $n$] for each candidate $\lambda$. Report the percentage of nonzeros in the \emph{last 1000 entries} in $\wv$ (\ie, weights corresponding to the added irrelevant features). Comparing with your results in Ex2.3, what can you conclude? [Mean square error, time complexity, sparsity, \etc]
+	
+\end{enumerate}
+\end{exercise}
+
+
+\end{document}
+              
