@@ -66,7 +66,7 @@ for t in range(0,500):
     for i in range(0,rownum):
         #print(w)
         #print(b)
-        if(matrix_y[i,0] * (np.inner(matrix_x[i],w) + b)) <= 0:
+        #if(matrix_y[i,0] * (np.inner(matrix_x[i],w) + b)) <= 0:
             w = w + matrix_y[i,0]*matrix_x[i]
             b = b + matrix_y[i,0]
         #if (matrix_y[i, 0] * (np.inner(matrix_x[i], w) + b)) <= 0:
@@ -79,7 +79,7 @@ for t in range(0,500):
     lsty.append(mistake)
 
 plt.plot(lstx, lsty, 'ro')
-plt.axis([0, 500, 0, 3000])
+plt.axis([0, 500, 0, 5000])
 plt.show()
 
 

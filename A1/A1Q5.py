@@ -61,12 +61,12 @@ with open('spambase_y.csv') as csvfile2:
 w = zeros(colnum * 2,dtype=complex_)
 w = w + 1/(1+colnum)
 b = 1/(1+colnum)
-n = 0.0001 #0.69315# the step size
+n = 0.0069315 #0.69315# the step size
 #print(w)
 #print(b)
 lstx = []
 lsty = []
-for t in range(0,2000):
+for t in range(0,500):
     mistake = 0
 
     for i in range(0,rownum):
@@ -94,6 +94,6 @@ for t in range(0,2000):
     lsty.append(mistake)
 
 plt.plot(lstx,lsty,'ro')
-plt.axis([0, 500, 0, 3000])
+#plt.axis([0, 500, 400, 1000])
 plt.show()
 
