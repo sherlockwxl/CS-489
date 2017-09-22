@@ -1,6 +1,7 @@
 import csv
 from numpy import *
 import numpy as np
+import matplotlib.pyplot as plt
 from decimal import Decimal
 import warnings
 
@@ -59,6 +60,8 @@ b = 1/(1+colnum)
 n = 0.00000001 #0.69315# the step size
 #print(w)
 #print(b)
+lstx = []
+lsty = []
 for t in range(0,500):
     mistake = 0
 
@@ -83,5 +86,11 @@ for t in range(0,500):
 
 
     print ("passes: %d, mistake: %d" %(t, mistake))
+    lstx.append(t)
+    lsty.append(mistake)
+
+plt.plot(lstx, lsty, 'ro')
+# plt.axis([0, 500, 0, 5000])
+plt.show()
 
 

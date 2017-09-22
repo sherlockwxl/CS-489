@@ -21,12 +21,14 @@ with open('spambase_X.csv') as csvfile:
 
 with open('spambase_X.csv') as csvfile:
     basexreader = csv.reader(csvfile)
-    matrix_x = np.zeros((rownum,colnum * 2),dtype=complex_)
+    matrix_x = np.zeros((rownum,(colnum+1) * 2),dtype=complex_)
     temp = 0
 
     for row in basexreader:
 
         tempfirst = array(row,dtype=float_)
+        tempfirst= np.append(tempfirst,[1])
+        print("col num  %d" % len(tempfirst))
         tempsecond = np.negative(tempfirst)
         transformx = np.append(tempfirst, tempsecond)
         matrix_x[temp] = matrix_x[temp] + transformx
@@ -58,7 +60,7 @@ with open('spambase_y.csv') as csvfile2:
 
 
 #now inilizte w and start train
-w = zeros(colnum * 2,dtype=complex_)
+w = zeros((colnum+1) * 2,dtype=complex_)
 w = w + 1/(1+colnum)
 b = 1/(1+colnum)
 n = 0.0069315 #0.69315# the step size

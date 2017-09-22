@@ -79,7 +79,7 @@ for t in range(0,500):
     lsty.append(mistake)
 
 plt.plot(lstx, lsty, 'ro')
-plt.axis([0, 500, 0, 5000])
+#plt.axis([0, 500, 0, 5000])
 plt.show()
 
 

@@ -1,7 +1,6 @@
 import numpy
 import csv
 from numpy import *
-from array import array
 def regression(x,csvfile2):
     trainx = numpy.loadtxt(x,delimiter=",")
     #trainy = numpy.loadtxt(y,delimiter=",")
@@ -32,11 +31,64 @@ def regression(x,csvfile2):
 
 
 # temp fix
-    for i in range(0,10):
+
+
+    #add test set
+
+    with open("housing_X_test.csv") as csvfile3:
+        testxreader = csv.reader(csvfile3)
+        rownum3 = 0
+        colnum3 = 0
+        for row3 in testxreader:
+            colnum3 = len(row3)
+            rownum3 = rownum3 + 1
+            #print("col3 num  %d" % colnum3)  # now we have the col num
+            #print("row3 num  %d" % rownum3)  # now we have the row num
+
+    with open("housing_X_test.csv") as csvfile3:
+        testxreader = csv.reader(csvfile3)
+
+        testx = numpy.zeros((rownum3, colnum3), dtype=float64)
+        temp = 0
+        for row3 in testxreader:
+            testx[temp] = testx[temp] + array(row3, dtype=float64)
+            temp = temp + 1
+
+    # temp fix
+    with open("housing_Y_test.csv") as csvfile4:
+        testyreader = csv.reader(csvfile4)
+        rownum4 = 0
+        colnum4 = 0
+        for row4 in testyreader:
+            colnum4 = len(row4)
+            rownum4 = rownum4 + 1
+            # print("col2 num  %d" % colnum2)  # now we have the col num
+            # print("row2 num  %d" % rownum2)  # now we have the row num
+
+    with open("housing_Y_test.csv") as csvfile4:
+        testyreader = csv.reader(csvfile4)
+
+        testy = numpy.zeros((rownum4, 1), dtype=float64)
+        temp = 0
+        for row4 in testyreader:
+            testy[temp] = testy[temp] + array(row4, dtype=float64)
+            temp = temp + 1
+    #norm for test
+    trainx = trainx/numpy.linalg.norm(trainx)
+    trainy = trainy / numpy.linalg.norm(trainy)
+    testx = testx/numpy.linalg.norm(testx)
+    testy = testy/numpy.linalg.norm(testy)
+    # temp fix
+
+    ilist =[]
+    #test set done
+    for i in range(0,100):
         #print(len(trainx[0]))
         #print(len(trainy))
         eachlength = int(len(trainy)/10) #eachlength is the length of each 1/10 train test
         errortrainingset = 0
+        errorvalidtest = 0
+        errortestset = 0
         for startpoint in range(0,10):
             testsetstart = startpoint * eachlength
             testsetend = (startpoint+1) * eachlength
@@ -72,15 +124,24 @@ def regression(x,csvfile2):
 
             trainsetxtran = numpy.transpose(trainsetx)
 
-            print (trainsety.shape)
-            left=numpy.dot(trainsetxtran,trainsetx) + (i+2)*10*numpy.identity(trainsetxtran.shape[0])
+            #print (trainsety.shape)
+            left=numpy.dot(trainsetxtran,trainsetx) + (i)*1*numpy.identity(trainsetxtran.shape[0])
             right = numpy.dot(trainsetxtran,trainsety)
 
             w = numpy.linalg.solve(left, right)
             #print(numpy.linalg.norm(numpy.dot(trainx,w)-trainy,2))
-            errortrainingset += numpy.linalg.norm(numpy.dot(testsetx,w)-testsety,2)**2/len(trainy)
-            print(errortrainingset)
-        print ("on i %d , trainning set mean error %f" %(i, errortrainingset/10))
+            errorvalidtest += numpy.linalg.norm(numpy.dot(testsetx,w)-testsety,2)**2/len(testsety)
+            errortrainingset += numpy.linalg.norm(numpy.dot(trainx,w)-trainy,2)**2/len(trainy)
+            errortestset +=  numpy.linalg.norm(numpy.dot(testx,w)-testy,2)**2/len(testy)
+            #print(errortrainingset)
+        #print ("on i %d , valid set mean error %f, training set error: %f, test set error: %f"%(i, errorvalidtest/10, errortrainingset/10, errortestset/10))
+        ilist.append((i,errorvalidtest,errortrainingset,errortestset,errorvalidtest+errortrainingset+errortestset))
+    ilist.sort(key=lambda tup: tup[1])
+    print(ilist)
+    ilist.sort(key=lambda tup: tup[2])
+    print(ilist)
+    ilist.sort(key=lambda tup: tup[3])
+    print(ilist)
 
 
 
