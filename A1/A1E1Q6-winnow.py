@@ -2,7 +2,6 @@ import csv
 from numpy import *
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 from decimal import Decimal
 import warnings
 
@@ -21,18 +20,19 @@ with open('spambase_X.csv') as csvfile:
 
 with open('spambase_X.csv') as csvfile:
     basexreader = csv.reader(csvfile)
-    matrix_x = np.zeros((rownum,(colnum+1) * 2),dtype=complex_)
+    matrix_x = np.zeros((rownum,colnum),dtype=complex_)
     temp = 0
 
     for row in basexreader:
 
-        tempfirst = array(row,dtype=float_)
-        tempfirst= np.append(tempfirst,[1])
-        print("col num  %d" % len(tempfirst))
-        tempsecond = np.negative(tempfirst)
-        transformx = np.append(tempfirst, tempsecond)
-        matrix_x[temp] = matrix_x[temp] + transformx
+        matrix_x[temp] = matrix_x[temp] + array(row,dtype=float_)
         temp = temp + 1
+
+
+matrix_x = matrix_x/np.linalg.norm(matrix_x)
+adddataset = np.random.uniform(-1,1,size=(len(matrix_x),100))
+matrix_x = np.hstack((matrix_x,adddataset))
+colnum+=100
 
 with open('spambase_y.csv') as csvfile2:
     baseyreader = csv.reader(csvfile2)
@@ -60,10 +60,10 @@ with open('spambase_y.csv') as csvfile2:
 
 
 #now inilizte w and start train
-w = zeros((colnum+1) * 2,dtype=complex_)
+w = zeros(colnum,dtype=complex_)
 w = w + 1/(1+colnum)
 b = 1/(1+colnum)
-n = 0.0013#69315 #0.69315# the step size
+n = 5 #0.69315# the step size
 #print(w)
 #print(b)
 lstx = []
@@ -95,7 +95,8 @@ for t in range(0,500):
     lstx.append(t)
     lsty.append(mistake)
 
-plt.plot(lstx,lsty,'ro')
-#plt.axis([0, 500, 400, 1000])
+plt.plot(lstx, lsty, 'ro')
+# plt.axis([0, 500, 0, 5000])
 plt.show()
+
 
