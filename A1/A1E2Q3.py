@@ -88,13 +88,15 @@ def regression(x,csvfile2):
 
     ilist =[]
     #test set done
-    for i in range(0,100):
+    for i in range(0,10):
         #print(len(trainx[0]))
         #print(len(trainy))
         eachlength = int(len(trainy)/10) #eachlength is the length of each 1/10 train test
         errortrainingset = 0
         errorvalidtest = 0
         errortestset = 0
+        wtotal = 0
+        wnonzerototal = 0
         for startpoint in range(0,10):
             testsetstart = startpoint * eachlength
             testsetend = (startpoint+1) * eachlength
@@ -131,23 +133,30 @@ def regression(x,csvfile2):
             trainsetxtran = numpy.transpose(trainsetx)
 
             #print (trainsety.shape)
-            left=numpy.dot(trainsetxtran,trainsetx) + (i)*1*numpy.identity(trainsetxtran.shape[0])
+            left=numpy.dot(trainsetxtran,trainsetx) + (i*10)*1*numpy.identity(trainsetxtran.shape[0])
             right = numpy.dot(trainsetxtran,trainsety)
 
             w = numpy.linalg.solve(left, right)
+
+            for wi in w:
+                wtotal += 1
+                if wi != 0:
+                    wnonzerototal += 1
+
+
             #print(numpy.linalg.norm(numpy.dot(trainx,w)-trainy,2))
             errorvalidtest += numpy.linalg.norm(numpy.dot(testsetx,w)-testsety,2)**2/len(testsety)
             errortrainingset += numpy.linalg.norm(numpy.dot(trainx,w)-trainy,2)**2/len(trainy)
             errortestset +=  numpy.linalg.norm(numpy.dot(testx,w)-testy,2)**2/len(testy)
             #print(errortrainingset)
-        print ("on i %d , valid set mean error %f, training set error: %f, test set error: %f"%(i, errorvalidtest/10, errortrainingset/10, errortestset/10))
+        print ("on i %d , valid set mean error %f, training set error: %f, test set error: %f,  percentage of nonzeros in w %f"%(i, errorvalidtest/10, errortrainingset/10, errortestset/10, wnonzerototal/wtotal))
         ilist.append((i,errorvalidtest,errortrainingset,errortestset,errorvalidtest+errortrainingset+errortestset))
     ilist.sort(key=lambda tup: tup[1])
-    print(ilist)
+    #print(ilist)
     ilist.sort(key=lambda tup: tup[2])
-    print(ilist)
+    #print(ilist)
     ilist.sort(key=lambda tup: tup[3])
-    print(ilist)
+    #print(ilist)
 
 
 

@@ -73,6 +73,11 @@ def regression(x,csvfile2):
         for row4 in testyreader:
             testy[temp] = testy[temp] + array(row4, dtype=float64)
             temp = temp + 1
+
+    adddataset = numpy.random.uniform(-1, 1, size=(len(trainx), 1000))
+    trainx = numpy.hstack((trainx, adddataset))
+    adddataset2 = numpy.random.uniform(-1, 1, size=(len(testx), 1000))
+    testx = numpy.hstack((testx, adddataset2))
     #norm for test
     trainx = trainx/numpy.linalg.norm(trainx)
     trainy = trainy / numpy.linalg.norm(trainy)
@@ -82,16 +87,16 @@ def regression(x,csvfile2):
 
     ilist =[]
     #test set done
-    for i in range(0,10):
+    for i in range(0,10):  #i is for lamda
         #print(len(trainx[0]))
         #print(len(trainy))
         eachlength = int(len(trainy)/10) #eachlength is the length of each 1/10 train test
         errortrainingset = 0
         errorvalidtest = 0
         errortestset = 0
-        wtotal = 0
-        wnonzerototal = 0
-        for startpoint in range(0,10):
+        for startpoint in range(0,10):#used for 10 - fold test
+
+            w = numpy.zeros((1,len(trainx[0])),dtype=float64)
             testsetstart = startpoint * eachlength
             testsetend = (startpoint+1) * eachlength
             if testsetend >= len(trainy):
@@ -127,20 +132,52 @@ def regression(x,csvfile2):
             trainsetxtran = numpy.transpose(trainsetx)
 
             #print (trainsety.shape)
-            left=numpy.dot(trainsetxtran,trainsetx) + (i*10)*1*numpy.identity(trainsetxtran.shape[0])
-            right = numpy.dot(trainsetxtran,trainsety)
+            #left=numpy.dot(trainsetxtran,trainsetx) + (i)*1*numpy.identity(trainsetxtran.shape[0])
+            #right = numpy.dot(trainsetxtran,trainsety)
 
-            w = numpy.linalg.solve(left, right)
-            for wi in w:
-                wtotal += 1
-                if wi != 0:
-                    wnonzerototal += 1
+            #w = numpy.linalg.solve(left, right)
             #print(numpy.linalg.norm(numpy.dot(trainx,w)-trainy,2))
+            j = 1
+            while True:#now loop untill change of w with 10-3
+
+                position = j%len(trainsetx[0])# optimial jth w
+                a = 0
+                result = numpy.zeros((trainsetx.shape[0], 1), dtype=float64)
+                b = 0
+                c = 0
+                for p in range(0,trainsetx.shape[0]):
+                    a += (trainx[p][position])**2
+                    resulttemp = numpy.inner(w,trainsetx[p])-trainsety[p]-trainx[p][position]*w[0][position]
+                    result[p] = resulttemp
+                    #print(numpy.inner(w,trainsetx[p]))
+                    #print(trainsety[p])
+                    #print(trainx[p][position])
+
+                for p in range(1, trainsetx.shape[0]):
+                    b += trainx[p][position]*result[p]
+                    c += result[p]*result[p]
+
+                #now we could get z
+                print(abs(-b/(2*a))-i*10/a)
+                z = max(0,abs(-b/(2*a))-i*10/a)
+                if (b/a) > 0:
+                    z = -z
+                if ( abs(w[0][position]-z) < 10**(-3)):
+                    break
+                else:
+                    w[0][position] = z
+                    j += 1
+                # now calculate V
+
+
+
+
+            w = numpy.transpose(w)
             errorvalidtest += numpy.linalg.norm(numpy.dot(testsetx,w)-testsety,2)**2/len(testsety)
             errortrainingset += numpy.linalg.norm(numpy.dot(trainx,w)-trainy,2)**2/len(trainy)
             errortestset +=  numpy.linalg.norm(numpy.dot(testx,w)-testy,2)**2/len(testy)
             #print(errortrainingset)
-        print ("on i %d , valid set mean error %f, training set error: %f, test set error: %f, percentage of nonzeros in w %f"%(i*10, errorvalidtest/10, errortrainingset/10, errortestset/10, wnonzerototal/wtotal))
+        print ("on i %d , valid set mean error %f, training set error: %f, test set error: %f"%(i, errorvalidtest/10, errortrainingset/10, errortestset/10))
         ilist.append((i,errorvalidtest,errortrainingset,errortestset,errorvalidtest+errortrainingset+errortestset))
     ilist.sort(key=lambda tup: tup[1])
     #print(ilist)
