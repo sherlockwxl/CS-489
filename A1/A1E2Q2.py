@@ -1,106 +1,42 @@
 import numpy
 import csv
 from numpy import *
-def regression(x,csvfile2):
+def regression(x,y):
     trainx = numpy.loadtxt(x,delimiter=",")
-    #trainy = numpy.loadtxt(y,delimiter=",")
-    #trainy = numpy.transpose(trainy)
+    trainy = numpy.loadtxt(y,delimiter=",")
 
-    #issue with y
-    with open("Q2y.csv") as csvfile2:
-        baseyreader = csv.reader(csvfile2)
-        rownum2 = 0
-        colnum2 = 0
-        for row2 in baseyreader:
-            colnum2 = len(row2)
-            rownum2 = rownum2 + 1
-            #print("col2 num  %d" % colnum2)  # now we have the col num
-            #print("row2 num  %d" % rownum2)  # now we have the row num
+    trainy = numpy.transpose(trainy)
 
 
-    with open("Q2y.csv") as csvfile2:
-        baseyreader = csv.reader(csvfile2)
-
-        trainy = numpy.zeros((rownum2, 1),dtype=float64)
-        temp = 0
-        for row2 in baseyreader:
-            trainy[temp] = trainy[temp] + numpy.asarray(row2,dtype=float64)
-            temp = temp + 1
-
-
-
-
-# temp fix
-
-
-    #add test set
-
-    with open("housing_X_test.csv") as csvfile3:
-        testxreader = csv.reader(csvfile3)
-        rownum3 = 0
-        colnum3 = 0
-        for row3 in testxreader:
-            colnum3 = len(row3)
-            rownum3 = rownum3 + 1
-            #print("col3 num  %d" % colnum3)  # now we have the col num
-            #print("row3 num  %d" % rownum3)  # now we have the row num
-
-    with open("housing_X_test.csv") as csvfile3:
-        testxreader = csv.reader(csvfile3)
-
-        testx = numpy.zeros((rownum3, colnum3), dtype=float64)
-        temp = 0
-        for row3 in testxreader:
-            testx[temp] = testx[temp] + array(row3, dtype=float64)
-            temp = temp + 1
-
-    # temp fix
-    with open("housing_Y_test.csv") as csvfile4:
-        testyreader = csv.reader(csvfile4)
-        rownum4 = 0
-        colnum4 = 0
-        for row4 in testyreader:
-            colnum4 = len(row4)
-            rownum4 = rownum4 + 1
-            # print("col2 num  %d" % colnum2)  # now we have the col num
-            # print("row2 num  %d" % rownum2)  # now we have the row num
-
-    with open("housing_Y_test.csv") as csvfile4:
-        testyreader = csv.reader(csvfile4)
-
-        testy = numpy.zeros((rownum4, 1), dtype=float64)
-        temp = 0
-        for row4 in testyreader:
-            testy[temp] = testy[temp] + array(row4, dtype=float64)
-            temp = temp + 1
-    #norm for test
-    trainx = trainx/numpy.linalg.norm(trainx)
-    trainy = trainy / numpy.linalg.norm(trainy)
-    testx = testx/numpy.linalg.norm(testx)
-    testy = testy/numpy.linalg.norm(testy)
+    testx = numpy.loadtxt("housing_X_test.csv", delimiter=",")
+    testy = numpy.loadtxt("housing_Y_test.csv", delimiter=",")
     # temp fix
 
     #Q2 modify
-    tuple = numpy.random.randint(0,rownum2-1,1)
+    tuple = numpy.random.randint(0,trainx.shape[0])
     print("will modify tuple %d" %(tuple))
 
-    trainx1 = trainx
-    trainy1 = trainy
-    trainx1[tuple] = trainx1[tuple] * math.pow(10,6)
-    trainy1[tuple] = trainy1[tuple] * math.pow(10,3)
+    trainx1 = trainx.copy()
+    trainy1 = trainy.copy()
+    trainx1[tuple] = trainx1[tuple] * 10**6
+    trainy1[tuple] = trainy1[tuple] * 10**3
     #print(trainx1[tuple])
     #print(trainy1[tuple])
     #test set done
+    trainx_backup = trainx.copy()
+    trainy_backup = trainy.copy()
     for q2i in range(0,3):
         ilist = []
         if q2i == 0:
-            trainx = trainx
+            trainx = trainx1.copy()
+            trainy = trainy_backup.copy()
         elif q2i == 1:
-            trainy = trainy
+            trainy = trainy1.copy()
+            trainx = trainx_backup.copy()
         else:
-            trainx = trainx
-            trainy = trainy
-        for i in range(0,10):
+            trainx = trainx1.copy()
+            trainy = trainy1.copy()
+        for i in range(0,11):
             #print(len(trainx[0]))
             #print(len(trainy))
             eachlength = int(len(trainy)/10) #eachlength is the length of each 1/10 train test
@@ -136,23 +72,25 @@ def regression(x,csvfile2):
                 elif len(trainsetxp2) == 0 :
                     trainsety = trainsetyp1
                 else :
-                    trainsety = numpy.vstack((trainsetyp1,trainsetyp2))
+                    trainsety = numpy.hstack((trainsetyp1,trainsetyp2))
 
 
 
                 trainsetxtran = numpy.transpose(trainsetx)
 
-                #print (trainsety.shape)
-                left=numpy.dot(trainsetxtran,trainsetx) + (i*10)*1*numpy.identity(trainsetxtran.shape[0])
+                left=numpy.dot(trainsetxtran,trainsetx) + (i*10)*numpy.identity(trainsetxtran.shape[0])
                 right = numpy.dot(trainsetxtran,trainsety)
 
                 w = numpy.linalg.solve(left, right)
-                #print(numpy.linalg.norm(numpy.dot(trainx,w)-trainy,2))
-                errorvalidtest += numpy.linalg.norm(numpy.dot(testsetx,w)-testsety,2)**2/len(testsety)
-                errortrainingset += numpy.linalg.norm(numpy.dot(trainx,w)-trainy,2)**2/len(trainy)
-                errortestset +=  numpy.linalg.norm(numpy.dot(testx,w)-testy,2)**2/len(testy)
+                errorvalidtest += numpy.linalg.norm(numpy.dot(testsetx,w)-testsety)**2/len(testsety)
+                errortrainingset += numpy.linalg.norm(numpy.dot(trainsetx,w)-trainsety)**2/len(trainsetx)
+            left = numpy.dot(numpy.transpose(trainx), trainx) + (i * 10)* numpy.identity(numpy.transpose(trainx).shape[0])
+            right = numpy.dot(numpy.transpose(trainx), trainy)
+
+            w = numpy.linalg.solve(left, right)
+            errortestset +=  numpy.linalg.norm(numpy.dot(testx,w)-testy)**2/len(testy)
                 #print(errortrainingset)
-            print ("on i %d , valid set mean error %f, training set error: %f, test set error: %f"%(i, errorvalidtest/10, errortrainingset/10, errortestset/10))
+            print ("on i %d , valid set mean error %f, training set error: %f, test set error: %f"%(i*10, errorvalidtest/10, errortrainingset/10, errortestset))
             ilist.append((i*10,errorvalidtest,errortrainingset,errortestset,errorvalidtest+errortrainingset+errortestset))
         if q2i == 0:
             print("only update trainning set x")
@@ -174,8 +112,8 @@ def regression(x,csvfile2):
 def main():
     #filexn = input('Please enter test set for x: ')
     #fileyn = input('Please enter test set for y: ')
-    filex = open("Q2x.csv")
-    filey = open("Q2y.csv")
+    filex = open("housing_x_train.csv")
+    filey = open("housing_y_train.csv")
     regression(filex,filey)
 
 

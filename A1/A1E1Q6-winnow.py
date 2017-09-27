@@ -63,7 +63,7 @@ with open('spambase_y.csv') as csvfile2:
 w = zeros(colnum,dtype=complex_)
 w = w + 1/(1+colnum)
 b = 1/(1+colnum)
-n = 5 #0.69315# the step size
+n = 3 #0.69315# the step size
 #print(w)
 #print(b)
 lstx = []
