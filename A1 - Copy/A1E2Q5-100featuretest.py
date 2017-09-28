@@ -36,6 +36,13 @@ def cross(x,y):
     testx = numpy.loadtxt("housing_X_test.csv",delimiter=",")
     testy = numpy.loadtxt("housing_Y_test.csv",delimiter=",")
 
+    adddataset = numpy.random.standard_normal(size=(len(trainx), 100))
+    trainx = numpy.hstack((trainx, adddataset))
+    adddataset2 = numpy.random.standard_normal(size=(len(testx), 100))
+    testx = numpy.hstack((testx, adddataset2))
+
+
+
     #norm for test
     #trainx = trainx/numpy.linalg.norm(trainx)
     #trainy = trainy / numpy.linalg.norm(trainy)
@@ -85,7 +92,7 @@ def cross(x,y):
 
 
             w = lasso(trainsetx,trainsety,i*10)
-            nonzerocount += numpy.count_nonzero(w)/(w.shape[0])
+            nonzerocount += numpy.count_nonzero(w[13:]) / (100)
 
 
             #w = lasso2(trainsetx,trainsety,i*10)
@@ -98,7 +105,7 @@ def cross(x,y):
 
 
                 #print(errortrainingset)
-        print ("on $\lambda$ = %d  ,  training set error: %f, valid set mean error %f, test set error: %f, percentage of nonzeros in w %f \\\\"%(i*10,  errortrainingset/10,errorvalidtest/10, errortestset, nonzerocount/10))
+        print ("on i %d ,  training set error: %f,valid set mean error %f, test set error: %f, percentage of nonzeros in w %f"%(i*10, errortrainingset/10,  errorvalidtest/10, errortestset, nonzerocount/10))
         ilist.append((i,errorvalidtest,errortrainingset,errortestset,errorvalidtest+errortrainingset+errortestset))
     ilist.sort(key=lambda tup: tup[1])
     #print(ilist)
@@ -112,7 +119,6 @@ def cross(x,y):
 
 
 def main():
-
     import timeit
 
     start = timeit.default_timer()

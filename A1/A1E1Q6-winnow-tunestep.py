@@ -64,40 +64,51 @@ w = zeros(colnum,dtype=complex_)
 w = w + 1/(1+colnum)
 b = 1/(1+colnum)
 
-n = 5.4 #0.69315# the step size
-#print(w)
-#print(b)
-lstx = []
-lsty = []
-for t in range(0,500):
-    mistake = 0
+arr = np.arange(0.0, 12.0, 0.1)
+resultarr = []
+for n in arr:
+    #n = 3.65 #0.69315# the step size
+    #print(w)
+    #print(b)
+    lstx = []
+    lsty = []
+    lowest = 0
+    for t in range(0,500):
+        mistake = 0
 
-    for i in range(0,rownum):
-        #print(w)
-        #print(b)
-        if(matrix_y[i,0] * (np.inner(matrix_x[i],w) + b)) <= 0:
-            #print("wrong")
-            #print(np.multiply(n,(matrix_y[i,0]*matrix_x[i])))
-            temp = np.exp(np.multiply(n,(matrix_y[i,0]*matrix_x[i])))
-            w = np.multiply(w, temp)
-            b = b * np.exp(matrix_y[i,0]*n)
+        for i in range(0,rownum):
+            #print(w)
             #print(b)
-            #print(np.sum(w))
-            s = b + np.sum(w)
+            if(matrix_y[i,0] * (np.inner(matrix_x[i],w) + b)) <= 0:
+                #print("wrong")
+                #print(np.multiply(n,(matrix_y[i,0]*matrix_x[i])))
+                temp = np.exp(np.multiply(n,(matrix_y[i,0]*matrix_x[i])))
+                w = np.multiply(w, temp)
+                b = b * np.exp(matrix_y[i,0]*n)
+                #print(b)
+                #print(np.sum(w))
+                s = b + np.sum(w)
 
-            w = np.divide(w,s)
-            b = b/s
-        #if (matrix_y[i, 0] * (np.inner(matrix_x[i], w) + b)) <= 0:
-            mistake = mistake + 1
+                w = np.divide(w,s)
+                b = b/s
+            #if (matrix_y[i, 0] * (np.inner(matrix_x[i], w) + b)) <= 0:
+                mistake = mistake + 1
 
 
+        if lowest == 0:
+            lowest = mistake
+        if lowest > mistake:
+            lowest = mistake
+        print ("passes: %d, mistake: %d" %(t, mistake))
+        lstx.append(t)
+        lsty.append(mistake)
+    resultarr.append((n, lowest))
 
-    print ("passes: %d, mistake: %d" %(t, mistake))
-    lstx.append(t)
-    lsty.append(mistake)
+    #plt.plot(lstx, lsty, 'ro')
+    # plt.axis([0, 500, 0, 5000])
+    #plt.show()
 
-plt.plot(lstx, lsty, 'ro')
-# plt.axis([0, 500, 0, 5000])
-plt.show()
+resultarr.sort(key=lambda tup: tup[1])
+print(resultarr)
 
 

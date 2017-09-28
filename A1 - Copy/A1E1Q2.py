@@ -2,8 +2,7 @@ import csv
 from numpy import *
 import numpy as np
 import matplotlib.pyplot as plt
-from decimal import Decimal
-import warnings
+
 
 max_pass = 500
 
@@ -20,19 +19,17 @@ with open('spambase_X.csv') as csvfile:
 
 with open('spambase_X.csv') as csvfile:
     basexreader = csv.reader(csvfile)
-    matrix_x = np.zeros((rownum,colnum),dtype=complex_)
+    matrix_x = np.zeros((rownum,colnum),dtype=float64)
     temp = 0
 
     for row in basexreader:
-
+        #print(array(row))
+        #print((matrix_x[temp]))
+        #print(type(array(row)))
         matrix_x[temp] = matrix_x[temp] + array(row,dtype=float_)
         temp = temp + 1
+#print(matrix_x[0])
 
-
-matrix_x = matrix_x/np.linalg.norm(matrix_x)
-adddataset = np.random.uniform(-1,1,size=(len(matrix_x),100))
-matrix_x = np.hstack((matrix_x,adddataset))
-colnum+=100
 
 with open('spambase_y.csv') as csvfile2:
     baseyreader = csv.reader(csvfile2)
@@ -51,7 +48,7 @@ if rownum != rownum2:
 with open('spambase_y.csv') as csvfile2:
     baseyreader = csv.reader(csvfile2)
 
-    matrix_y = np.zeros((rownum,1),dtype=complex_)
+    matrix_y = np.zeros((rownum,1),dtype=float64)
     temp = 0
     for row2 in baseyreader:
         matrix_y[temp] = matrix_y[temp] + array(row2,dtype=float_)
@@ -60,13 +57,8 @@ with open('spambase_y.csv') as csvfile2:
 
 
 #now inilizte w and start train
-w = zeros(colnum,dtype=complex_)
-w = w + 1/(1+colnum)
-b = 1/(1+colnum)
-
-n = 5.4 #0.69315# the step size
-#print(w)
-#print(b)
+w = zeros(colnum)
+b = 0
 lstx = []
 lsty = []
 for t in range(0,500):
@@ -75,20 +67,11 @@ for t in range(0,500):
     for i in range(0,rownum):
         #print(w)
         #print(b)
-        if(matrix_y[i,0] * (np.inner(matrix_x[i],w) + b)) <= 0:
-            #print("wrong")
-            #print(np.multiply(n,(matrix_y[i,0]*matrix_x[i])))
-            temp = np.exp(np.multiply(n,(matrix_y[i,0]*matrix_x[i])))
-            w = np.multiply(w, temp)
-            b = b * np.exp(matrix_y[i,0]*n)
-            #print(b)
-            #print(np.sum(w))
-            s = b + np.sum(w)
-
-            w = np.divide(w,s)
-            b = b/s
-        #if (matrix_y[i, 0] * (np.inner(matrix_x[i], w) + b)) <= 0:
-            mistake = mistake + 1
+        #if(matrix_y[i,0] * (np.inner(matrix_x[i],w) + b)) <= 0:
+            w = w + matrix_y[i,0]*matrix_x[i]
+            b = b + matrix_y[i,0]
+            if (matrix_y[i, 0] * (np.inner(matrix_x[i], w) + b)) <= 0:
+                mistake = mistake + 1
 
 
 
@@ -97,7 +80,7 @@ for t in range(0,500):
     lsty.append(mistake)
 
 plt.plot(lstx, lsty, 'ro')
-# plt.axis([0, 500, 0, 5000])
+#plt.axis([0, 500, 0, 5000])
 plt.show()
 
 

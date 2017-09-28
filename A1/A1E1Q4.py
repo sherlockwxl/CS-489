@@ -28,12 +28,6 @@ with open('spambase_X.csv') as csvfile:
         matrix_x[temp] = matrix_x[temp] + array(row,dtype=float_)
         temp = temp + 1
 
-
-matrix_x = matrix_x/np.linalg.norm(matrix_x)
-adddataset = np.random.uniform(-1,1,size=(len(matrix_x),100))
-matrix_x = np.hstack((matrix_x,adddataset))
-colnum+=100
-
 with open('spambase_y.csv') as csvfile2:
     baseyreader = csv.reader(csvfile2)
     rownum2 = 0
@@ -63,8 +57,7 @@ with open('spambase_y.csv') as csvfile2:
 w = zeros(colnum,dtype=complex_)
 w = w + 1/(1+colnum)
 b = 1/(1+colnum)
-
-n = 5.4 #0.69315# the step size
+n = 0.00000001 #0.69315# the step size
 #print(w)
 #print(b)
 lstx = []
