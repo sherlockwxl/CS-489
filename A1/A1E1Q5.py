@@ -16,8 +16,8 @@ with open('spambase_X.csv') as csvfile:
         colnum = len(row)
         rownum = rownum + 1
 
-    print ("col num  %d" %colnum) # now we have the col num
-    print ("row num  %d" % rownum)  # now we have the row num
+   # print ("col num  %d" %colnum) # now we have the col num
+   # print ("row num  %d" % rownum)  # now we have the row num
 
 with open('spambase_X.csv') as csvfile:
     basexreader = csv.reader(csvfile)
@@ -28,7 +28,7 @@ with open('spambase_X.csv') as csvfile:
 
         tempfirst = array(row,dtype=float_)
         tempfirst= np.append(tempfirst,[1])
-        print("col num  %d" % len(tempfirst))
+        #print("col num  %d" % len(tempfirst))
         tempsecond = np.negative(tempfirst)
         transformx = np.append(tempfirst, tempsecond)
         matrix_x[temp] = matrix_x[temp] + transformx
@@ -41,8 +41,8 @@ with open('spambase_y.csv') as csvfile2:
     for row2 in baseyreader:
         colnum2 = len(row2)
         rownum2 = rownum2 + 1
-    print ("col2 num  %d" % colnum2)  # now we have the col num
-    print ("row2 num  %d" % rownum2)  # now we have the row num
+   # print ("col2 num  %d" % colnum2)  # now we have the col num
+   # print ("row2 num  %d" % rownum2)  # now we have the row num
 
 if rownum != rownum2:
     print ("row number does not match")
